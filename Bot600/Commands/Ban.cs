@@ -6,6 +6,8 @@ using Discord.WebSocket;
 
 namespace Bot600.Commands
 {
+    [RequireUserPermissionInGuild(GuildPermission.BanMembers, ErrorMessage = "Only moderators can issue this command")]
+    [RequireModeratorRoleInGuild]
     public class BanCommandModule : ModuleBase<SocketCommandContext>
     {
         private readonly BanTemplate banTemplate;
@@ -20,12 +22,6 @@ namespace Bot600.Commands
         private async Task BanMember(IUser user, string? reason, Anonymous anon = Anonymous.No)
         {
             SocketUser? banner = Context.Message.Author;
-            if (await botMain.IsUserModerator(banner) == IsModerator.No)
-            {
-                await ReplyAsync($"Error executing !ban: {banner.Mention} is not a moderator");
-                return;
-            }
-
             IDMChannel? baneeDm = await user.GetOrCreateDMChannelAsync();
 
             string bannerStr;
@@ -49,7 +45,8 @@ namespace Bot600.Commands
             try
             {
                 IMessage? directMsg = await baneeDm.SendMessageAsync(banMsg);
-                if (directMsg is not null && directMsg.Id != 0)
+                if (directMsg is not null
+                    && directMsg.Id != 0)
                 {
                     feedback = $"{user.Mention} has been banned. The message sent was the following:\n{banMsg}";
                 }
@@ -66,14 +63,12 @@ namespace Bot600.Commands
 
         [Command("ban", RunMode = RunMode.Async)]
         [Summary("Bans a player and sends them an appeal message.")]
-        [RequireUserPermission(GuildPermission.BanMembers, ErrorMessage = "Only moderators can issue this command")]
         public async Task Ban([Summary("User")] ulong userId, [Remainder] [Summary("Ban reason")] string? reason = null)
         {
             await Ban(await Context.Client.Rest.GetUserAsync(userId), reason);
         }
 
         [Command("ban", RunMode = RunMode.Async)]
-        [Summary("Bans a player and sends them an appeal message.")]
         [RequireUserPermission(GuildPermission.BanMembers, ErrorMessage = "Only moderators can issue this command")]
         public async Task Ban([Summary("User")] IUser user, [Remainder] [Summary("Ban reason")] string? reason = null)
         {
@@ -83,7 +78,6 @@ namespace Bot600.Commands
 
         [Command("ban_anon", RunMode = RunMode.Async)]
         [Summary("Bans a player and sends them an appeal message.")]
-        [RequireUserPermission(GuildPermission.BanMembers, ErrorMessage = "Only moderators can issue this command")]
         public async Task BanAnon([Summary("User")] ulong userId,
                                   [Remainder] [Summary("Ban reason")] string? reason = null)
         {
@@ -92,7 +86,6 @@ namespace Bot600.Commands
 
         [Command("ban_anon", RunMode = RunMode.Async)]
         [Summary("Bans a player and sends them an appeal message.")]
-        [RequireUserPermission(GuildPermission.BanMembers, ErrorMessage = "Only moderators can issue this command")]
         public async Task BanAnon([Summary("User")] IUser user,
                                   [Remainder] [Summary("Ban reason")] string? reason = null)
         {

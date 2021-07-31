@@ -16,8 +16,9 @@ namespace Bot600.Commands
         }
 
         [Command("killswitch", RunMode = RunMode.Async)]
-        [Summary("Kills the bot.")]
-        [RequireUserPermission(GuildPermission.ManageGuild, ErrorMessage = "Only moderators can issue this command")]
+        [Summary("Kills the bot")]
+        [RequireUserPermissionInGuild(GuildPermission.ManageGuild, ErrorMessage = "Only moderators can issue this command")]
+        [RequireModeratorRoleInGuild]
         public async Task KillSwitch()
         {
             SocketUser? user = Context.Message.Author;

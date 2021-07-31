@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
+using Bot600.Utils;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -7,6 +8,7 @@ using Newtonsoft.Json;
 
 namespace Bot600.Commands
 {
+    [HideFromHelp]
     public class HyenaCommandModule : ModuleBase<SocketCommandContext>
     {
         private const string Endpoint = "https://api.yeen.land";
@@ -27,21 +29,8 @@ namespace Bot600.Commands
             await dm.SendMessageAsync("https://tenor.com/view/keanu-reeves-knife-gif-19576998");
         }
 
-        [Command("help", RunMode = RunMode.Async)]
-        [Summary("Lists commands that are available to all users.")]
-        public async Task Help()
-        {
-            SocketUser? author = Context.Message.Author;
-            IDMChannel? dm = await author.GetOrCreateDMChannelAsync();
-            await dm.SendMessageAsync(
-                                      "```" +
-                                      "!help: Shows this list of commands.\n" +
-                                      "!c [hash]: Shows the description of a given commit on Barotrauma's private GitHub repository." +
-                                      "```");
-        }
-
         [Command("hyena", RunMode = RunMode.Async)]
-        [Summary("hyena images")]
+        [Summary("Fetch a random hyena image")]
         [Alias("yeen")]
         public async Task Hyena()
         {
@@ -51,7 +40,7 @@ namespace Bot600.Commands
         }
 
         [Command("hyena", RunMode = RunMode.Async)]
-        [Summary("hyena images")]
+        [Summary("Fetch a hyena image by id")]
         [Alias("yeen")]
         public async Task Hyena(ulong id)
         {

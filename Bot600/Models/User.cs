@@ -40,7 +40,7 @@ namespace Bot600.Models
         /// <summary>
         ///     Whether the user is currently classified as cringe or not.
         /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)] 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public bool IsCringeBool
         {
             get => TotalMessages > 3 && (double) CringeMessages / TotalMessages > 0.5;
@@ -49,7 +49,7 @@ namespace Bot600.Models
             // This is needed for EF core
             private set { }
         }
-        
+
         public IsCringe IsCringe => IsCringeBool ? IsCringe.Yes : IsCringe.No;
 
         public static User GetOrCreateUser(WatcherDatabaseContext db, ulong userId)

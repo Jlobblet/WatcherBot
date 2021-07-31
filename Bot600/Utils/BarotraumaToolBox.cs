@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 
@@ -36,14 +40,23 @@ namespace Bot600.Utils
             return count;
         }
 
-        public static bool ToBool(this IsCringe cringe)
-        {
-            return cringe == IsCringe.Yes;
-        }
+        public static bool ToBool(this IsCringe cringe) => cringe == IsCringe.Yes;
 
-        public static IsCringe ToCringe(this bool @bool)
-        {
-            return @bool ? IsCringe.Yes : IsCringe.No;
-        }
+        public static IsCringe ToCringe(this bool @bool) => @bool ? IsCringe.Yes : IsCringe.No;
+
+        [return: NotNull]
+        [Pure]
+        public static IEnumerable<TResult> WhereSelect<TSource, TResult>(
+            [NotNull] this IEnumerable<TSource> source,
+            [NotNull] Func<TSource, bool> predicate,
+            [NotNull] Func<TSource, TResult> mapping) =>
+            source.Where(predicate).Select(mapping);
+
+        [return: NotNull]
+        [Pure]
+        public static IEnumerable<TSource> FilterZip<TSource>(
+            [NotNull] this IEnumerable<TSource> source,
+            [NotNull] IEnumerable<bool> filter) =>
+            source.Zip(filter).WhereSelect(tup => tup.Second, tup => tup.First);
     }
 }

@@ -5,22 +5,6 @@ namespace Bot600
 {
     public record Config
     {
-        public readonly BanTemplate BanTemplate;
-        public readonly IConfigurationRoot Configuration;
-
-        public readonly string GitHubToken;
-        public readonly ulong OutputGuildId;
-        public readonly string DiscordApiToken;
-
-        public readonly ImmutableHashSet<ulong> CringeChannels;
-        public readonly ImmutableHashSet<char> FormattingCharacters;
-        public readonly ImmutableHashSet<ulong> InvitesAllowedOnChannels;
-        public readonly ImmutableHashSet<ulong> InvitesAllowedOnServers;
-        public readonly ImmutableHashSet<ulong> ModeratorRoleIds;
-        public readonly ImmutableHashSet<ulong> NoConversationsAllowedOnChannels;
-        public readonly ImmutableHashSet<ulong> ProhibitCommandsFromUsers;
-        public readonly ImmutableHashSet<ulong> ProhibitFormattingFromUsers;
-
         public Config(IConfigurationBuilder builder)
         {
             Configuration = builder.Build();
@@ -47,10 +31,26 @@ namespace Bot600
                                                        .ToImmutableHashSet();
         }
 
-        public static Config DefaultConfig()
-        {
-            return new(new ConfigurationBuilder()
-                           .AddJsonFile("appsettings.json", false, false));
-        }
+        public static Config DefaultConfig() =>
+            new(new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", false, false));
+
+        // @formatter:off
+        public readonly BanTemplate BanTemplate;
+        public readonly IConfigurationRoot Configuration;
+
+        public readonly string GitHubToken;
+        public readonly ulong OutputGuildId;
+        public readonly string DiscordApiToken;
+
+        public readonly ImmutableHashSet<ulong> CringeChannels;
+        public readonly ImmutableHashSet<char> FormattingCharacters;
+        public readonly ImmutableHashSet<ulong> InvitesAllowedOnChannels;
+        public readonly ImmutableHashSet<ulong> InvitesAllowedOnServers;
+        public readonly ImmutableHashSet<ulong> ModeratorRoleIds;
+        public readonly ImmutableHashSet<ulong> NoConversationsAllowedOnChannels;
+        public readonly ImmutableHashSet<ulong> ProhibitCommandsFromUsers;
+        public readonly ImmutableHashSet<ulong> ProhibitFormattingFromUsers;
+        // @formatter:on
     }
 }

@@ -15,7 +15,7 @@ namespace Bot600
         }
 
         [Command("commitmsg", RunMode = RunMode.Async)]
-        [Summary("Gets a commit message.")]
+        [Summary("Gets commit messages for each hash passed")]
         [Alias("c", "commit")]
         public async Task CommitMsg2([Summary("The hash or GitHub URL to get the commit message for")]
                                      params string[] hashes)

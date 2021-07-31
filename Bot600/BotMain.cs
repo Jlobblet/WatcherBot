@@ -16,8 +16,8 @@ namespace Bot600
     public class BotMain : IDisposable
     {
         private readonly DiscordSocketClient client;
-        private readonly CommandService commandService;
-        private readonly IServiceProvider commandServiceProvider;
+        internal readonly CommandService CommandService;
+        internal readonly IServiceProvider CommandServiceProvider;
 
         internal readonly Config Config;
 
@@ -44,10 +44,10 @@ namespace Bot600
             client.MessageReceived += ReceiveMessage;
             client.Ready += OnReady;
 
-            commandService = new CommandService();
-            commandServiceProvider = new CommandServiceProvider(this);
-            commandService.AddModulesAsync(Assembly.GetEntryAssembly(),
-                                           commandServiceProvider);
+            CommandService = new CommandService();
+            CommandServiceProvider = new CommandServiceProvider(this);
+            CommandService.AddModulesAsync(Assembly.GetEntryAssembly(),
+                                           CommandServiceProvider);
 
             // Database
             watcherDatabaseContext = new WatcherDatabaseContext();
@@ -58,7 +58,7 @@ namespace Bot600
         public void Dispose()
         {
             client.Dispose();
-            ((IDisposable) commandService).Dispose();
+            ((IDisposable) CommandService).Dispose();
             watcherDatabaseContext.Dispose();
         }
 
@@ -91,7 +91,8 @@ namespace Bot600
 
             try
             {
-                if (msg.Author.IsBot || msg is not SocketUserMessage usrMsg)
+                if (msg.Author.IsBot
+                    || msg is not SocketUserMessage usrMsg)
                 {
                     return;
                 }
@@ -135,8 +136,7 @@ namespace Bot600
                     bool authorIsBot = message.Author.IsBot;
                     int numberWellSizedAttachments = message.Attachments.Count(a => a.Width is null
                                                                                    || a.Height is null
-                                                                                   || a.Width >= 16 &&
-                                                                                   a.Height >= 16);
+                                                                                   || a.Width >= 16 && a.Height >= 16);
                     int numberLinks = message.Content.CountSubstrings("https://");
 
                     return
@@ -145,14 +145,15 @@ namespace Bot600
                         && !insecureLink;
                 }
 
-                if (Config.NoConversationsAllowedOnChannels.Contains(msg.Channel.Id) && !MessageHasOneAttachment(msg))
+                if (Config.NoConversationsAllowedOnChannels.Contains(msg.Channel.Id)
+                    && !MessageHasOneAttachment(msg))
                 {
                     DeleteMsg();
                     return;
                 }
 
-                if (Config.ProhibitFormattingFromUsers.Contains(msg.Author.Id) &&
-                    msg.Content.Any(c => Config.FormattingCharacters.Contains(c)))
+                if (Config.ProhibitFormattingFromUsers.Contains(msg.Author.Id)
+                    && msg.Content.Any(c => Config.FormattingCharacters.Contains(c)))
                 {
                     DeleteMsg();
                     return;
@@ -190,10 +191,9 @@ namespace Bot600
             await Task.Yield();
             var argPos = 0;
 
-            if (Config.ProhibitCommandsFromUsers.Contains(msg.Author.Id) ||
-                !(msg.HasCharPrefix('!', ref argPos) ||
-                  msg.HasMentionPrefix(client.CurrentUser, ref argPos)) ||
-                msg.Author.IsBot)
+            if (Config.ProhibitCommandsFromUsers.Contains(msg.Author.Id)
+                || !(msg.HasCharPrefix('!', ref argPos) || msg.HasMentionPrefix(client.CurrentUser, ref argPos))
+                || msg.Author.IsBot)
             {
                 return;
             }
@@ -202,9 +202,9 @@ namespace Bot600
 
             // Execute the command with the command context we just
             // created, along with the service provider for precondition checks.
-            await commandService.ExecuteAsync(context,
-                                        argPos,
-                                        commandServiceProvider);
+            await CommandService.ExecuteAsync(context,
+                                              argPos,
+                                              CommandServiceProvider);
         }
 
         private async Task OnReady()
