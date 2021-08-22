@@ -7,11 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="CommitMessage.fs"/>
+        <Compile Include="Utils.fs" />
+        <Compile Include="CommitMessage.fs" />
+        <Compile Include="Ban.fs" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Octokit" Version="0.50.0"/>
+        <PackageReference Include="Argu" Version="6.1.1" />
+        <PackageReference Include="DisCatSharp" Version="9.6.2" />
+        <PackageReference Include="DisCatSharp.CommandsNext" Version="9.6.2" />
+        <PackageReference Include="FSharpPlus" Version="1.2.1" />
+        <PackageReference Include="Octokit" Version="0.50.0" />
     </ItemGroup>
 
 </Project>

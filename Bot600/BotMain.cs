@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot600.Config;
+using Bot600.FSharp;
 using Bot600.Models;
 using Bot600.Utils;
 using DisCatSharp;
@@ -15,7 +16,7 @@ using Octokit;
 
 namespace Bot600
 {
-    public class BotMain : IDisposable
+    public sealed class BotMain : IDisposable
     {
         public readonly DiscordClient Client;
 
@@ -68,6 +69,7 @@ namespace Bot600
                 UseDefaultCommandHandler = false,
             };
             CommandsNextExtension commands = Client.UseCommandsNext(commandsConfig);
+            commands.RegisterConverter(new Ban.BanSettingsConverter());
             commands.RegisterCommands(Assembly.GetAssembly(typeof(BotMain)));
 
             // Database

@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
 using Bot600.Config;
+using Bot600.FSharp;
 using Bot600.Utils;
 using DisCatSharp;
 using DisCatSharp.CommandsNext;
 using DisCatSharp.CommandsNext.Attributes;
 using DisCatSharp.Entities;
+using FSharpPlus;
+using Microsoft.FSharp.Core;
+using Task = System.Threading.Tasks.Task;
 
 namespace Bot600.Commands
 {
@@ -71,17 +75,6 @@ namespace Bot600.Commands
         [RequirePermissionInGuild(Permissions.BanMembers)]
         [RequireModeratorRoleInGuild]
         [RequireDmOrOutputGuild]
-        public async Task Ban(
-            CommandContext context,
-            [Description("ID of user to ban")] ulong memberId,
-            string? reason = null) =>
-            await BanMember(context, await botMain.DiscordConfig.OutputGuild.GetMemberAsync(memberId), reason);
-
-        [Command("ban")]
-        [Description("Ban a member and send them an appeal message via DMs, including your username for contact.")]
-        [RequirePermissionInGuild(Permissions.BanMembers)]
-        [RequireModeratorRoleInGuild]
-        [RequireDmOrOutputGuild]
         public async Task Ban(CommandContext context, DiscordMember member, [RemainingText] string? reason = null) =>
             await BanMember(context, member, reason);
 
@@ -93,22 +86,14 @@ namespace Bot600.Commands
         [RequireDmOrOutputGuild]
         public async Task BanAnon(
             CommandContext context,
-            [Description("ID of user to ban")] ulong memberId,
-            [RemainingText] string? reason = null) =>
-            await BanMember(context,
-                            await botMain.DiscordConfig.OutputGuild.GetMemberAsync(memberId),
-                            reason,
-                            Anonymous.Yes);
-
-        [Command("ban_anon")]
-        [Description("Ban a member and send them an appeal message via DMs with a default username for contact.")]
-        [RequirePermissionInGuild(Permissions.BanMembers)]
-        [RequireModeratorRoleInGuild]
-        [RequireDmOrOutputGuild]
-        public async Task BanAnon(
-            CommandContext context,
             DiscordMember member,
             [RemainingText] string? reason = null) =>
             await BanMember(context, member, reason, Anonymous.Yes);
+
+        [Command("ban_test")]
+        public async Task BanTest(CommandContext context, [RemainingText] Ban.BanSettings settings)
+        {
+            await context.RespondAsync($"{OptionModule.DefaultValue(0u, settings.PurgeDays)}");
+        }
     }
 }
